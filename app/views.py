@@ -40,14 +40,15 @@ def upload():
     if request.method == 'POST':
         if upload1.validate_on_submit():
             photo = upload1.photo.data
-            flash('File Saved', 'success')
             namefile = secure_filename(photo.filename)
             photo.save(os.path.join( app.config['UPLOAD_FOLDER'],namefile))
+            flash('File Saved', 'success')
             return redirect(url_for('home'))
         else:
             flash_errors(upload1)
-
-    return render_template('upload.html', form = upload1)
+            return render_template('upload.html', form = upload1)
+    elif request.method == 'GET':       
+        return render_template('upload.html', form = upload1)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -67,8 +68,10 @@ def login():
 def files():
     if not session.get('logged_in'):
         abort(401)
-    return render_template('files.html', filenames = get_uploaded_images())
 
+    pics = get_uploaded_images()
+
+    return render_template('files.html', all_photos=pics)
 
 @app.route('/logout')
 def logout():
@@ -79,18 +82,18 @@ def logout():
 @app.route('/uploads/<filename>')
 def get_image(filename):
     dir1 = os.getcwd()
-    return  send_from_directory(os.path.join(dir1, app.config['UPLOAD_FOLDER']), filename)
+    var_t = send_from_directory(os.path.join(dir1, app.config['UPLOAD_FOLDER']), filename)
+    return  var_t
 
 def get_uploaded_images():
-
-    filelst = list()
-    rootdir = os.path.join(app.config['UPLOAD_FOLDER'])
-    for subdir, dirs, files in os.walk(rootdir):
-
-        for x in files:
-            filelst.append(x)
-
-    return filelst
+    rootdir = os.getcwd()
+    filename = []
+    for subdir, dirs, files in os.walk(rootdir+ app.config['UPLOAD_FOLDER']):
+        for file in files:
+            filenamelst = (os.path.join(subdir,file))
+            filename.append(os.path.basename(filenamelst))
+    
+    return filename
 ###
 # The functions below should be applicable to all Flask apps.
 ###

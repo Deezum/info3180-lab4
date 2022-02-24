@@ -1,3 +1,27 @@
 body {
     padding-top: 5rem;
 }
+.columns {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    margin-bottom: 20px;
+}
+
+.images {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: 15px;
+}
+
+.uploaded-img {
+    width: 100%;
+    height: 90%;
+    align-self: center;
+    box-shadow: 1px 1px #808080;
+    object-fit: cover;
+}
